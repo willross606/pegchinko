@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+canvas {
+  display: block;
+  border: 2px solid #22BABB;
+  background-color: #9EF8EE;
+  font-family: 'Borel', cursive;
+}
