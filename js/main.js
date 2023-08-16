@@ -46,11 +46,6 @@ const ball = {
   released: false
 }
 
-const circleB = {
-  x: 180,
-  y: 240
-};
-
 const pegRadius = 20;
 
 function updateMovingBall() {
@@ -73,10 +68,10 @@ function updateMovingBall() {
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       // Bounce off peg if they collide
-      if (distance <= ball.radius + pegRadius) {
+      if (distance <= ball.radius + levels[game.currentLevel].pegRadius) {
         const angle = Math.atan2(dy, dx);
-        const targetX = levels[game.currentLevel].pegs[i].x + Math.cos(angle) * (ball.radius + pegRadius);
-        const targetY = levels[game.currentLevel].pegs[i].y + Math.sin(angle) * (ball.radius + pegRadius);
+        const targetX = levels[game.currentLevel].pegs[i].x + Math.cos(angle) * (ball.radius + levels[game.currentLevel].pegRadius);
+        const targetY = levels[game.currentLevel].pegs[i].y + Math.sin(angle) * (ball.radius + levels[game.currentLevel].pegRadius);
 
         const normalX = ball.x - targetX;
         const normalY = ball.y - targetY;
@@ -132,6 +127,7 @@ function updateMovingBall() {
 
 }
 
+// Move ball back to top of screen
 function resetBall(){
   ball.x =  390;
   ball.y =  22;
@@ -142,6 +138,7 @@ function resetBall(){
   ball.released = false;
 }
 
+// Manage player controls for moving ball before firing
 function letPlayerMoveBall(){
   if (keysPressed.ArrowLeft) {
     ball.x = ball.x - 2;
@@ -154,12 +151,14 @@ function letPlayerMoveBall(){
   }
 }
 
+// Controls on title screen
 function title(){
   if (keysPressed.ArrowLeft || keysPressed.ArrowRight) {
     game.state = 'playerControlsBall';
   }
 }
 
+// Load next level
 function nextLevel(){
   if (keysPressed.ArrowRight) {
     game.currentLevel ++;
@@ -172,11 +171,9 @@ function update() {
 
   if (game.state == 'playerControlsBall'){
     letPlayerMoveBall();
-  } 
-  else if (game.state == 'ballMoving' || game.state == 'levelComplete') {
+  } else if (game.state == 'ballMoving' || game.state == 'levelComplete') {
     updateMovingBall();
-  } 
-  else if (game.state == 'title') {
+  } else if (game.state == 'title') {
     title();
   }
 
@@ -187,14 +184,34 @@ function update() {
   
 }
 
+// Utility function to shuffle an array, used in selectLitPegs()
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+// Randomise which pegs are 'lit'
 function selectLitPegs(){
   shuffle(levels[game.currentLevel].pegs);
-  // Randomise which pegs are 'lit'
   for (let i = 0; i < levels[game.currentLevel].initialLitPegs; i++) {
     levels[game.currentLevel].pegs[i].glowing = true;
   } 
 }
 
+// Draw screen
 function draw() {
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -226,7 +243,7 @@ function draw() {
   for (let i = 0; i < levels[game.currentLevel].pegs.length;i++){
     if (levels[game.currentLevel].pegs[i].active){
       ctx.beginPath();
-      ctx.arc(levels[game.currentLevel].pegs[i].x, levels[game.currentLevel].pegs[i].y, pegRadius, 0, Math.PI * 2);
+      ctx.arc(levels[game.currentLevel].pegs[i].x, levels[game.currentLevel].pegs[i].y, levels[game.currentLevel].pegRadius, 0, Math.PI * 2);
 
       if (!levels[game.currentLevel].pegs[i].glowing) {
         ctx.fillStyle = game.pegColor;
@@ -340,27 +357,10 @@ function draw() {
 
 }
 
+// Main game loop
 function loop(){
   update();
   draw();
-}
-
-function shuffle(array) {
-  let currentIndex = array.length,  randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex != 0) {
-
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
 }
 
 function init(){
