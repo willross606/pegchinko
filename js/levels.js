@@ -170,7 +170,7 @@ const levels = [
   },
   {
     levelNumber: 2,
-    pegRadius: 20,
+    pegRadius: 10,
     initialLitPegs: 8,
     currentLitPegs: 8,
     pegs: [

@@ -13,7 +13,7 @@ let game = {
   score: 0,
   scoreMultiplier: 1,
   numberOfLitPegs: 8,
-  currentLevel: 0
+  currentLevel: 1
 }
 
 let keysPressed = {
@@ -46,7 +46,7 @@ const ball = {
   released: false
 }
 
-const pegRadius = 20;
+// const pegRadius = 20;
 
 function updateMovingBall() {
 
@@ -131,7 +131,6 @@ function updateMovingBall() {
 function resetBall(){
   ball.x =  390;
   ball.y =  22;
-  ball.radius =  20;
   ball.xVelocity =  0;
   ball.yVelocity = 0;
   ball.gravity = game.gravity;
@@ -162,8 +161,9 @@ function title(){
 function nextLevel(){
   if (keysPressed.ArrowRight) {
     game.currentLevel ++;
-    selectLitPegs()
+    selectLitPegs();
     game.state = 'playerControlsBall'
+    ball.radius = levels[game.currentLevel].pegRadius;
   }
 }
 
@@ -365,6 +365,7 @@ function loop(){
 
 function init(){
   selectLitPegs()
+  ball.radius = levels[game.currentLevel].pegRadius;
   console.log('Starting level ' + game.currentLevel)
 }
 
